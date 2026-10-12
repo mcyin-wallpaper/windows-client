@@ -1,0 +1,68 @@
+{
+  "name": "com.mcyin.wallpaper",
+  "productName": "Wallpaper时光机",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Wallpaper时光机，收集每日壁纸。",
+  "keywords": [],
+  "license": "MIT",
+  "author": {
+    "name": "mcyin",
+    "email": "724651441@qq.com"
+  },
+  "main": "main.js",
+  "scripts": {
+    "version:date": "node scripts/update-version.js",
+    "prestart": "npm run version:date",
+    "start": "electron .",
+    "prebuild:win": "npm run version:date",
+    "build:win": "electron-builder --win --x64 --publish never",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "commonjs",
+  "build": {
+    "appId": "com.mcyin.wallpaper",
+    "productName": "Wallpaper时光机",
+    "copyright": "© 0000 wallpaper.mcyin.com Wallpaper时光机 - 本应用使用Electron引擎开发。",
+    "artifactName": "${name}.${version}.${ext}",
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "icon.ico",
+      "uninstallerIcon": "icon.ico",
+      "installerHeaderIcon": "icon.ico",
+      "artifactName": "${name}.nsis.${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "${name}.portable.${version}.${ext}"
+    },
+    "files": [
+      "main.js",
+      "icon.ico"
+    ]
+  },
+  "devDependencies": {
+    "electron": "^0.0.0",
+    "electron-builder": "^0.0.0"
+  },
+  "allowScripts": {
+    "electron-winstaller": true
+  }
+}

@@ -1,0 +1,43 @@
+name: Release Windows Client
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  release:
+    name: 构建 Windows 应用程序并发布 Release
+    runs-on: windows-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: 设置 Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: 安装依赖
+        run: npm install electron@latest electron-builder@latest
+      - name: 构建 Windows X64 应用程序
+        run: npm run build:win
+      - name: 读取版本号
+        id: pkg
+        run: |
+          $version = node -p "require('./package.json').version"
+          "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+      - name: 创建 GitHub Release 并上传安装包
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: v${{ steps.pkg.outputs.version }}
+          name: Wallpaper时光机 - Windows客户端 - ${{ steps.pkg.outputs.version }}
+          body_path: release-notes.md
+          files: dist/*.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
